@@ -49,7 +49,7 @@ class Pembelian extends Model
     // Opsi: Relasi ke tabel pembayaran (untuk melacak pelunasan ke vendor)
     public function pembayaranPembelian()
     {
-        return $this->hasMany(PengeluaranVendor::class, 'pembelian_id');
+        return $this->hasMany(pembayaranPembelian::class, 'pembelian_id');
     }
 
     
