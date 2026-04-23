@@ -21,17 +21,12 @@ class Pembelian extends Model
     public static function getKodeFakturBeli()
     {
         // Query faktur terakhir
-        $sql = "SELECT IFNULL(MAX(no_faktur_beli), 'B-0000000') as no_faktur 
+        $sql = "SELECT IFNULL(MAX(CAST(SUBSTRING(no_faktur_beli, 3) AS UNSIGNED)), 0) as max_num 
                 FROM pembelian ";
-        $kodefaktur = DB::select($sql);
+        $result = DB::select($sql);
 
-        foreach ($kodefaktur as $kdbeli) {
-            $kd = $kdbeli->no_faktur;
-        }
-
-        // Ambil angka setelah 'B-'
-        $noawal = substr($kd, -7);
-        $noakhir = (int)$noawal + 1; 
+        $maxNum = $result[0]->max_num;
+        $noakhir = $maxNum + 1; 
         
         // Bungkus kembali menjadi format B-0000001
         $noakhir = 'B-' . str_pad($noakhir, 7, "0", STR_PAD_LEFT);
@@ -56,11 +51,6 @@ class Pembelian extends Model
     {
         return $this->hasMany(PengeluaranVendor::class, 'pembelian_id');
     }
-    public function hitungSisaHutang()
-{
-    $totalTagihan = $this->total_bayar;
-    $totalDibayar = $this->pembayaranPembelian()->sum('jumlah_bayar');
+
     
-    return $totalTagihan - $totalDibayar;
-}
-}
+}   
